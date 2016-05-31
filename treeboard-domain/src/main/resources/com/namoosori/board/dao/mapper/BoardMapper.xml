@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.namoosori.board.dao.mapper.BoardMapper">
+
+	<insert id="insertBoard" parameterType="Board" useGeneratedKeys="true" keyProperty="boardNo">
+		INSERT INTO board(board_name)
+		VALUES (#{name})
+	</insert>
+	
+	<insert id="insertBoardManager" parameterType="BoardManager">
+		INSERT INTO manager (fk_board_no, fk_user_id)
+		VALUES (#{boardNo}, #{managerId})
+	</insert>
+
+	<resultMap type="Board" id="result-board">
+		<result property="boardNo"  column="board_no"   javaType="int" />
+		<result property="name"     column="board_name" javaType="string"/>
+		<collection property="managers" ofType="BoardManager">
+			<id property="roleUser.userId"    column="user_id"   javaType="string" />
+			<result property="roleUser.name"  column="user_name" javaType="string" />
+			<result property="roleUser.email" column="email"     javaType="string" />
+		</collection>
+	</resultMap>
+
+	<select id="selectBoard" parameterType="int" resultMap="result-board">
+		SELECT 
+			 a.board_no
+			,a.board_name
+	        ,c.user_id
+	        ,c.user_name
+	        ,c.email
+		FROM board a
+	    JOIN manager b ON a.board_no = b.fk_board_no
+	    LEFT JOIN user c ON b.fk_user_id = c.user_id
+		WHERE a.board_no = #{boardNo}
+	</select>
+	
+	<select id="selectAllBoards" resultMap="result-board">
+		SELECT 
+			 a.board_no
+			,a.board_name
+	        ,c.user_id
+	        ,c.user_name
+	        ,c.email
+		FROM board a
+	    JOIN manager b ON a.board_no = b.fk_board_no
+	    LEFT JOIN user c ON b.fk_user_id = c.user_id
+	</select>
+	
+	<delete id="deleteBoard" parameterType="int">
+		DELETE FROM board WHERE board_no = #{boardNo}
+	</delete>
+	
+	<update id="updateBoard" parameterType="Board">
+		UPDATE board 
+		SET board_name = #{name}
+		WHERE board_no = #{boardNo}
+	</update>
+	
+	<delete id="deleteAllBoardManager" parameterType="int">
+		DELETE FROM manager WHERE fk_board_no = #{boardNo}
+	</delete>
+
+</mapper>

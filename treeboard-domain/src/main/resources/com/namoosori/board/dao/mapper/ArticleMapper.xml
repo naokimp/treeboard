@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.namoosori.board.dao.mapper.ArticleMapper">
+
+	<resultMap type="Article" id="result-article">
+		<id property="articleNo" column="article_no" javaType="int" />
+		<result property="subject"   column="subject"    javaType="string" />
+		<result property="content"   column="content"    javaType="string" />
+		<result property="regDate"   column="reg_date"   javaType="java.util.Date" />
+		<association property="author" javaType="User">
+			<id property="userId" column="author_id" javaType="string" />
+			<result property="name" column="author_name" javaType="string" />
+		</association>
+	</resultMap>
+
+ 	<select id="selectAllArticles" parameterType="int" resultMap="result-article">
+ 		SELECT 
+ 			article_no
+ 			, subject
+ 			, content
+ 			, author_id
+ 			, author_name
+ 			, reg_date
+ 		FROM article
+ 		WHERE fk_board_no = #{boardNo}
+	</select>
+	
+	<insert id="insertArticle" parameterType="map" useGeneratedKeys="true" keyProperty="article.articleNo">
+		INSERT INTO article(
+			subject
+			, content
+			, author_id
+			, author_name
+			, reg_date
+			, fk_board_no
+		) VALUES (
+			#{article.subject}
+			, #{article.content}
+			, #{article.author.userId}
+			, #{article.author.name}
+			, sysdate()
+			, #{boardNo}
+		)
+	</insert>
+	
+ 	<select id="selectArticle" parameterType="int" resultMap="result-article">
+ 		SELECT 
+ 			article_no
+ 			, subject
+ 			, content
+ 			, author_id
+ 			, author_name
+ 			, reg_date
+ 		FROM article
+ 		WHERE article_no = #{articleNo}
+	</select>
+	
+	<delete id="deleteArticle" parameterType="int">
+		DELETE FROM article WHERE article_no = #{articleNo}
+	</delete>
+	
+	<update id="updateArticle" parameterType="Article">
+		UPDATE article
+		SET subject = #{subject}
+			, content = #{content}
+		WHERE article_no = #{articleNo}	
+	</update>
+	
+	<select id="selectBoardNoByArticleNo" parameterType="int" resultType="int">
+		SELECT fk_board_no FROM article WHERE article_no = #{articleNo}
+	</select>
+	
+	<delete id="deleteArticlesByBoardNo" parameterType="int">
+		DELETE FROM article WHERE fk_board_no = #{boardNo}
+	</delete>
+
+</mapper>

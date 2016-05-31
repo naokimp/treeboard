@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.namoosori.board.dao.mapper.UserMapper">
+
+	<insert id="insertUser" parameterType="User">
+		INSERT INTO user(user_id, password, user_name, email)
+		VALUES (#{userId}, #{password}, #{name}, #{email})
+	</insert>
+
+	<resultMap type="User" id="result-user">
+		<result property="userId"   column="user_id"   javaType="string" />
+		<result property="password" column="password"  javaType="string" />
+		<result property="name"     column="user_name" javaType="string" />
+		<result property="email"    column="email"     javaType="string" />
+	</resultMap>
+	
+	<select id="selectUser" parameterType="string" resultMap="result-user">
+		SELECT 
+			user_id
+			,password
+			,user_name
+			,email
+		FROM user
+		WHERE user_id = #{userId}
+	</select>
+	
+	<select id="selectAllUserList" resultMap="result-user">
+		SELECT 
+			user_id
+			,password
+			,user_name
+			,email
+		FROM user
+	</select>
+
+	<delete id="deleteUser" parameterType="string">
+		DELETE FROM user WHERE user_id = #{userId}
+	</delete>
+	
+	<update id="updateUser" parameterType="User">
+		UPDATE user 
+		<set>
+			<if test="password != null">password = #{password},</if>
+			user_name = #{name},
+			email = #{email},
+		</set>
+		WHERE user_id = #{userId}
+	</update>
+	
+</mapper>

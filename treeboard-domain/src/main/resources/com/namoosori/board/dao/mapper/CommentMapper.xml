@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.namoosori.board.dao.mapper.CommentMapper">
+
+	<resultMap type="Comment" id="result-comment">
+		<id property="commentNo" column="comment_no" javaType="int" />
+		<result property="comment" column="comment"  javaType="string" />
+		<result property="regDate" column="reg_date" javaType="java.util.Date"/>	
+		<association property="commenter" javaType="User">
+			<id property="userId" column="commenter_id" javaType="string" />
+			<result property="name" column="commenter_name" javaType="string" />
+		</association>
+	</resultMap>
+
+	<select id="selectAllComments" parameterType="int" resultMap="result-comment">
+		SELECT comment_no
+			, comment
+			, commenter_id
+			, commenter_name
+			, reg_date
+		FROM comment
+		WHERE fk_article_no = #{articleNo}
+	</select>
+
+	<insert id="insertComment" parameterType="map" useGeneratedKeys="true" keyProperty="comment.commentNo">
+		INSERT INTO comment(
+			comment
+			, commenter_id
+			, commenter_name
+			, reg_date
+			, fk_article_no
+			, fk_board_no
+		) VALUE (
+			#{comment.comment}
+			, #{comment.commenter.userId}
+			, #{comment.commenter.name}
+			, sysdate()
+			, #{articleNo}
+			, #{boardNo}
+		)
+	</insert>
+
+	<update id="updateComment" parameterType="Comment">
+		UPDATE comment
+		SET comment = #{comment}
+		WHERE comment_no = #{commentNo}
+	</update>
+	
+	<delete id="deleteComment" parameterType="int">
+		DELETE FROM comment WHERE comment_no = #{commentNo}
+	</delete>
+	
+	<delete id="deleteCommentsByArticleNo" parameterType="int">
+		DELETE FROM comment WHERE fk_article_no = #{articleNo}
+	</delete>
+	
+	<delete id="deleteCommentsByBoardNo" parameterType="int">
+		DELETE FROM comment WHERE fk_board_no = #{boardNo}
+	</delete>
+	
+	
+</mapper>

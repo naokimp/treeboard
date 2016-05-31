@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+   PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+   "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+	<properties resource="com/namoosori/board/dao/mybatis-config.properties" />
+
+	<settings>
+		<setting name="cacheEnabled" value="true" />
+		<setting name="lazyLoadingEnabled" value="false" />
+		<setting name="aggressiveLazyLoading" value="false" />
+		<setting name="multipleResultSetsEnabled" value="true" />
+		<setting name="useColumnLabel" value="true" />
+		<setting name="useGeneratedKeys" value="true" />
+		<setting name="defaultExecutorType" value="SIMPLE" />
+		<setting name="defaultStatementTimeout" value="25000" />
+		<setting name="autoMappingBehavior" value="PARTIAL" />
+	</settings>
+
+	<typeAliases>
+		<typeAlias alias="User"         type="com.namoosori.board.domain.User" />
+		<typeAlias alias="Board"        type="com.namoosori.board.domain.Board" />
+		<typeAlias alias="BoardManager" type="com.namoosori.board.domain.BoardManager" />
+		<typeAlias alias="Article"      type="com.namoosori.board.domain.Article" />
+		<typeAlias alias="Comment"      type="com.namoosori.board.domain.Comment" />
+	</typeAliases>
+
+	<environments default="development">
+		<environment id="development">
+			<transactionManager type="JDBC" />
+			<dataSource type="POOLED">
+				<property name="driver" value="${database.driver}" />
+				<property name="url" value="${database.url}" />
+				<property name="username" value="${database.username}" />
+				<property name="password" value="${database.password}" />
+			</dataSource>
+		</environment>
+	</environments>
+	<mappers>
+		<mapper resource="com/namoosori/board/dao/mapper/UserMapper.xml" />
+		<mapper resource="com/namoosori/board/dao/mapper/BoardMapper.xml" />
+		<mapper resource="com/namoosori/board/dao/mapper/ArticleMapper.xml" />
+		<mapper resource="com/namoosori/board/dao/mapper/CommentMapper.xml" />
+	</mappers>
+
+</configuration>
